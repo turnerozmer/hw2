@@ -77,12 +77,14 @@ Role.destroy_all
 
 # Insert data into your database that reflects the sample data shown above
 # Do not use hard-coded foreign key IDs.
+
+#add Nolan object
 nolan = Person.new({name: "Christopher Nolan"})
 nolan.save
 
+#create movie objects
 nolan = Person.where(name: "Christopher Nolan")[0]
 nolanID = nolan.read_attribute(:id)
-
 batmanBegins = Movie.new({ title: "Batman Begins", year_released: 2005, rated: "PG-13", person_id: nolanID })
 batmanBegins.save
 darkKnight = Movie.new({ title: "The Dark Knight", year_released: 2008, rated: "PG-13", person_id: nolanID })
@@ -90,14 +92,46 @@ darkKnight.save
 dKR = Movie.new({ title: "The Dark Knight Rises", year_released: 2012, rated: "PG-13", person_id: nolanID })
 dKR.save
 
-# Prints a header for the movies output
-puts "People"
-puts "======"
-puts ""
-people = Person.all
-for person in people
-    puts "#{person.id}, #{person.name}"
+#create people objects
+peopleList = ["Christian Bale", "Michael Caine", "Liam Neeson", "Katie Holmes", "Gary Oldman", "Heath Ledger", "Aaron Eckhart", "Maggie Gyllenhaal", "Tom Hardy", "Joseph Gordon-Levitt", "Anne Hathaway"]
+for person in peopleList
+    item = Person.new({ name: person})
+    item.save
 end
+
+#add Batman Begins roles
+movie = Movie.where({ title: "Batman Begins"})[0]
+movieId = movie.id
+roleList = [["Christian Bale", "Bruce Wayne"], ["Michael Caine", "Alfred"], ["Liam Neeson", "Ra's Al Ghul"], ["Katie Holmes", "Rachel Dawes"], ["Gary Oldman", "Commissioner Gordon"]]
+for role in roleList
+    person = Person.where({ name: role[0] })[0]
+    personId = person.id
+    item = Role.new({ movie_id: movieId, person_id: personId, character_name: role[1]})
+    item.save
+end
+
+#add Dark Knight roles
+movie = Movie.where({ title: "The Dark Knight"})[0]
+movieId = movie.id
+roleList = [["Christian Bale", "Bruce Wayne"], ["Michael Caine", "Alfred"], ["Heath Ledger", "Joker"], ["Maggie Gyllenhaal", "Rachel Dawes"], ["Aaron Eckhart", "Harvey Dent"]]
+for role in roleList
+    person = Person.where({ name: role[0] })[0]
+    personId = person.id
+    item = Role.new({ movie_id: movieId, person_id: personId, character_name: role[1]})
+    item.save
+end
+
+#add Dark Knight Rises roles
+movie = Movie.where({ title: "The Dark Knight Rises"})[0]
+movieId = movie.id
+roleList = [["Christian Bale", "Bruce Wayne"], ["Gary Oldman", "Commissioner Gordon"], ["Tom Hardy", "Bane"], ["Joseph Gordon-Levitt", "John Blake"], ["Anne Hathaway", "Selina Kyle"]]
+for role in roleList
+    person = Person.where({ name: role[0] })[0]
+    personId = person.id
+    item = Role.new({ movie_id: movieId, person_id: personId, character_name: role[1]})
+    item.save
+end
+
 
 puts ""
 # Prints a header for the movies output
@@ -120,4 +154,10 @@ puts "========"
 puts ""
 
 # Query the cast data and loop through the results to display the cast output for each movie
-# TODO!
+roles = Role.all
+for role in roles
+    person = Person.where({ id: role.person_id })[0]
+    movie = Movie.where({ id: role.movie_id })[0]
+    puts "#{movie.title}, #{person.name}, #{role.character_name}"
+    
+end
