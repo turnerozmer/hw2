@@ -80,18 +80,36 @@ Role.destroy_all
 nolan = Person.new({name: "Christopher Nolan"})
 nolan.save
 
-nolanID = People.where(name: "Christopher Nolan")
-batmanBegins = Movie.new({title: "Batman Begins", year_released: 2005, rated: "PG-13", person_id = nolanID})
-batmanBegins.save
+nolan = Person.where(name: "Christopher Nolan")[0]
+nolanID = nolan.read_attribute(:id)
 
+batmanBegins = Movie.new({ title: "Batman Begins", year_released: 2005, rated: "PG-13", person_id: nolanID })
+batmanBegins.save
+darkKnight = Movie.new({ title: "The Dark Knight", year_released: 2008, rated: "PG-13", person_id: nolanID })
+darkKnight.save
+dKR = Movie.new({ title: "The Dark Knight Rises", year_released: 2012, rated: "PG-13", person_id: nolanID })
+dKR.save
+
+# Prints a header for the movies output
+puts "People"
+puts "======"
+puts ""
+people = Person.all
+for person in people
+    puts "#{person.id}, #{person.name}"
+end
+
+puts ""
 # Prints a header for the movies output
 puts "Movies"
 puts "======"
 puts ""
 
 # Query the movies data and loop through the results to display the movies output
-for movie in Movie
-    puts movie
+movies = Movie.all
+for movie in movies
+    director = Person.where({ id: movie.person_id })[0]
+    puts "#{movie.title}, #{movie.year_released}, #{movie.rated}, #{director.name}"
 end
 
 
